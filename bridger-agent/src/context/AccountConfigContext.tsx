@@ -1,11 +1,6 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import { MOCK_BANK_ACCOUNTS } from "@/lib/mock-data";
-
-const DEFAULT_CONFIGS: Record<string, string> = Object.fromEntries(
-  MOCK_BANK_ACCOUNTS.map((a) => [a.id, JSON.stringify({ fiscalYearStart: "01-01", autoCategorizeThreshold: 0.85 }, null, 2)])
-);
 
 interface AccountConfigContextValue {
   configs: Record<string, string>;
@@ -15,7 +10,7 @@ interface AccountConfigContextValue {
 const AccountConfigContext = createContext<AccountConfigContextValue | null>(null);
 
 export function AccountConfigProvider({ children }: { children: React.ReactNode }) {
-  const [configs, setConfigs] = useState<Record<string, string>>(DEFAULT_CONFIGS);
+  const [configs, setConfigs] = useState<Record<string, string>>({});
 
   function saveConfig(bankAccountId: string, config: string) {
     setConfigs((prev) => ({ ...prev, [bankAccountId]: config }));

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ApolloWrapper } from "@/client/graphql/ApolloWrapper";
 import { AccountConfigProvider } from "@/context/AccountConfigContext";
 
 const geistSans = localFont({
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AccountConfigProvider>{children}</AccountConfigProvider>
+        <ApolloWrapper>
+          <AccountConfigProvider>{children}</AccountConfigProvider>
+        </ApolloWrapper>
       </body>
     </html>
   );

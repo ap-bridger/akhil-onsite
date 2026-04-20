@@ -3,6 +3,13 @@ import {
   categorizeTransaction,
   transactions,
 } from "@/server/modules/transaction/api";
+import { bankAccounts } from "@/server/modules/bank-account/api";
+import { vendors } from "@/server/modules/vendor/api";
+import { categories } from "@/server/modules/category/api";
+import {
+  clientConfigs,
+  updateClientConfig,
+} from "@/server/modules/client-config/api";
 import { createSchema, createYoga } from "graphql-yoga";
 
 const { handleRequest } = createYoga({
@@ -44,13 +51,29 @@ const { handleRequest } = createYoga({
         categorization: Categorization
       }
 
+      type BankAccount {
+        id: ID!
+        name: String!
+        accountNumber: String!
+        clientId: ID!
+      }
+
+      type ClientConfig {
+        id: ID!
+        config: String!
+        bankAccountId: ID!
+      }
+
       type Query {
         greetings: String
         transactions(bankAccountId: ID!): [Transaction!]!
+        bankAccounts: [BankAccount!]!
+        vendors: [Vendor!]!
+        categories: [Category!]!
+        clientConfigs(bankAccountId: ID!): [ClientConfig!]!
       }
 
       type Mutation {
-        # status must be NEEDS_MORE_INFO or REVIEWED (NEEDS_REVIEW is not accepted here)
         categorizeTransaction(
           transactionId: ID!
           status: CategorizationStatus!
@@ -58,23 +81,30 @@ const { handleRequest } = createYoga({
           payee: String
           reason: String
         ): Transaction!
+
+        updateClientConfig(
+          bankAccountId: ID!
+          config: String!
+        ): ClientConfig!
       }
     `,
     resolvers: {
       Query: {
         greetings,
         transactions,
+        bankAccounts,
+        vendors,
+        categories,
+        clientConfigs,
       },
       Mutation: {
         categorizeTransaction,
+        updateClientConfig,
       },
     },
   }),
 
-  // While using Next.js file convention for routing, we need to configure Yoga to use the correct endpoint
   graphqlEndpoint: "/api/graphql",
-
-  // Yoga needs to know how to create a valid Next response
   fetchAPI: { Response },
 });
 
