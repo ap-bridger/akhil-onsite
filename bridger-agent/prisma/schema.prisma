@@ -31,6 +31,7 @@ model Transaction {
   id               String           @id @default(uuid())
   details          String
   amount           Float
+  transactionDate  DateTime         @map("transaction_date")
   bankAccountId    String           @map("bank_account_id")
   bankAccount      BankAccount      @relation(fields: [bankAccountId], references: [id])
   // Most recent categorization; null if not yet categorized
