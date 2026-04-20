@@ -56,6 +56,7 @@ const { handleRequest } = createYoga({
           status: CategorizationStatus!
           categoryId: ID
           payee: String
+          reason: String
         ): Transaction!
       }
     `,

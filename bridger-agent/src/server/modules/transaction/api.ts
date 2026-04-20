@@ -27,6 +27,7 @@ export const categorizeTransaction = async (
     status: CategorizationStatus;
     categoryId?: string | null;
     payee?: string | null;
+    reason?: string | null;
   },
 ) => {
   if (args.status !== "NEEDS_MORE_INFO" && args.status !== "REVIEWED") {
@@ -51,7 +52,7 @@ export const categorizeTransaction = async (
 
     const categorization = await tx.categorization.create({
       data: {
-        reason: "Manually categorized",
+        reason: args.reason ?? "Manually categorized",
         aiGenerated: false,
         status: args.status,
         confidenceScore: 100,
