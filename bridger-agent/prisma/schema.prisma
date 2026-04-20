@@ -15,7 +15,6 @@ model Client {
   id            String         @id @default(uuid())
   name          String
   bankAccounts  BankAccount[]
-  clientConfigs ClientConfig[]
 }
 
 model BankAccount {
@@ -76,8 +75,6 @@ model Categorization {
 model ClientConfig {
   id            String      @id @default(uuid())
   config        String
-  clientId      String      @map("client_id")
-  client        Client      @relation(fields: [clientId], references: [id])
   bankAccountId String      @map("bank_account_id")
   bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
 }
