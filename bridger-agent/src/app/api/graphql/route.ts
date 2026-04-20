@@ -18,11 +18,17 @@ const { handleRequest } = createYoga({
         name: String!
       }
 
+      enum CategorizationStatus {
+        NEEDS_REVIEW
+        NEEDS_MORE_INFO
+        REVIEWED
+      }
+
       type Categorization {
         id: ID!
         reason: String!
         aiGenerated: Boolean!
-        status: String!
+        status: CategorizationStatus!
         confidenceScore: Int!
         createdAt: String!
         payee: Vendor
@@ -43,15 +49,11 @@ const { handleRequest } = createYoga({
         transactions(bankAccountId: ID!): [Transaction!]!
       }
 
-      enum CategorizeStatus {
-        NEEDS_MORE_INFO
-        REVIEWED
-      }
-
       type Mutation {
+        # status must be NEEDS_MORE_INFO or REVIEWED (NEEDS_REVIEW is not accepted here)
         categorizeTransaction(
           transactionId: ID!
-          status: CategorizeStatus!
+          status: CategorizationStatus!
           categoryId: ID
           payee: String
         ): Transaction!

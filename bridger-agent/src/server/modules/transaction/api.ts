@@ -18,13 +18,13 @@ export const transactions = async (
   });
 };
 
-type CategorizeStatus = "NEEDS_MORE_INFO" | "REVIEWED";
+type CategorizationStatus = "NEEDS_REVIEW" | "NEEDS_MORE_INFO" | "REVIEWED";
 
 export const categorizeTransaction = async (
   _parent: unknown,
   args: {
     transactionId: string;
-    status: CategorizeStatus;
+    status: CategorizationStatus;
     categoryId?: string | null;
     payee?: string | null;
   },
