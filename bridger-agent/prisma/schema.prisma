@@ -10,3 +10,71 @@ datasource db {
 model Greet {
   id Int @id @default(autoincrement())
 }
+
+model Client {
+  id            String         @id @default(uuid())
+  name          String
+  bankAccounts  BankAccount[]
+}
+
+model BankAccount {
+  id             String         @id @default(uuid())
+  name           String
+  accountNumber  String         @unique @default(uuid()) @map("account_number")
+  clientId       String         @map("client_id")
+  client         Client         @relation(fields: [clientId], references: [id])
+  transactions   Transaction[]
+  clientConfigs  ClientConfig[]
+}
+
+model Transaction {
+  id               String           @id @default(uuid())
+  details          String
+  amount           Float
+  bankAccountId    String           @map("bank_account_id")
+  bankAccount      BankAccount      @relation(fields: [bankAccountId], references: [id])
+  // Most recent categorization; null if not yet categorized
+  categorizationId String?          @unique @map("categorization_id")
+  categorization   Categorization?  @relation("CurrentCategorization", fields: [categorizationId], references: [id])
+  categorizations  Categorization[] @relation("TransactionCategorizations")
+}
+
+model Vendor {
+  id              String           @id @default(uuid())
+  name            String
+  categorizations Categorization[]
+}
+
+model Category {
+  id              String           @id @default(uuid())
+  name            String
+  categorizations Categorization[]
+}
+
+model Categorization {
+  id              String   @id @default(uuid())
+  reason          String
+  aiGenerated     Boolean  @map("ai_generated")
+  // Valid values: NEEDS_REVIEW | REVIEWED | NEEDS_MORE_INFO
+  // (SQLite does not support Prisma enums)
+  status          String
+  confidenceScore Int      @map("confidence_score")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  payeeId    String?  @map("payee_id")
+  payee      Vendor?  @relation(fields: [payeeId], references: [id])
+  categoryId String?  @map("category_id")
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  transactionId String      @map("transaction_id")
+  transaction   Transaction @relation("TransactionCategorizations", fields: [transactionId], references: [id])
+
+  currentForTransaction Transaction? @relation("CurrentCategorization")
+}
+
+model ClientConfig {
+  id            String      @id @default(uuid())
+  config        String
+  bankAccountId String      @map("bank_account_id")
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
+}
