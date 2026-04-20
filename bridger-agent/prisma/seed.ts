@@ -199,7 +199,7 @@ async function seedCategorizations(
       data: {
         transactionId,
         aiGenerated: row.aiGenerated ?? true,
-        status: row.humanOverride ? "REVIEWED" : row.status,
+        status: row.status,
         confidenceScore: row.confidence,
         reason: row.reason,
         payeeId: row.vendor ? vendorIdByName.get(row.vendor) ?? null : null,
