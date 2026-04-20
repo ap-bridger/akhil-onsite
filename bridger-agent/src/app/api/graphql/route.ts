@@ -1,5 +1,8 @@
 import { greetings } from "@/server/modules/greet/api";
-import { transactions } from "@/server/modules/transaction/api";
+import {
+  categorizeTransaction,
+  transactions,
+} from "@/server/modules/transaction/api";
 import { createSchema, createYoga } from "graphql-yoga";
 
 const { handleRequest } = createYoga({
@@ -15,11 +18,17 @@ const { handleRequest } = createYoga({
         name: String!
       }
 
+      enum CategorizationStatus {
+        NEEDS_REVIEW
+        NEEDS_MORE_INFO
+        REVIEWED
+      }
+
       type Categorization {
         id: ID!
         reason: String!
         aiGenerated: Boolean!
-        status: String!
+        status: CategorizationStatus!
         confidenceScore: Int!
         createdAt: String!
         payee: Vendor
@@ -39,11 +48,25 @@ const { handleRequest } = createYoga({
         greetings: String
         transactions(bankAccountId: ID!): [Transaction!]!
       }
+
+      type Mutation {
+        # status must be NEEDS_MORE_INFO or REVIEWED (NEEDS_REVIEW is not accepted here)
+        categorizeTransaction(
+          transactionId: ID!
+          status: CategorizationStatus!
+          categoryId: ID
+          payee: String
+          reason: String
+        ): Transaction!
+      }
     `,
     resolvers: {
       Query: {
         greetings,
         transactions,
+      },
+      Mutation: {
+        categorizeTransaction,
       },
     },
   }),
