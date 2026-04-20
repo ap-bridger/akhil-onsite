@@ -51,3 +51,4 @@ Common commands
 - View a UI over the database: `npm run prisma:studio`
 - Run migrations: `npm run prisma:migrate:dev`
 - Format the schema file: `npm run prisma:format`
+- Seed demo data (Mogee Tea LLC, ~20 Q1 2026 transactions): `npm run prisma:seed`
